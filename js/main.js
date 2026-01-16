@@ -145,12 +145,6 @@ function highlightLegend(binIndex) {
 }
 
 var legend = L.control({ position: "bottomright" });
-div.innerHTML += "<hr style='margin:8px 0;border:0;border-top:1px solid #ddd;'>";
-div.innerHTML += "<div style='font-size:12px; line-height:1.4; color:#444;'>" +
-                 "<b>Data:</b> SDG 4 (Girls), 2018<br>" +
-                 "<b>Basemap:</b> OpenStreetMap<br>" +
-                 "<b>Author:</b> Janeda Baysal" +
-                 "</div>";
 
 legend.onAdd = function () {
   var div = L.DomUtil.create("div", "legend");
@@ -205,4 +199,5 @@ if (closeBtn && modal) {
     modal.classList.add("hidden");
   });
 }
+
 
