@@ -1,15 +1,18 @@
 # SDG 4 – Girls’ Literacy in Europe (2018)
 
-This interactive choropleth map visualizes girls’ literacy achievement across European countries in 2018.
+This interactive choropleth map shows the distribution of SDG 4 girls’ literacy achievement in Europe in 2018.
+Countries are classified into five categories based on their scores. Lighter colors indicate lower values, while darker colors indicate higher values.
 
 ## Data
-- SDG 4 Girls’ Literacy Indicator (2018)
-- Source: United Nations
+- Indicator: SDG 4 (Girls’ Literacy Achievement), 2018
+- Countries: Europe
+- GeoJSON includes country boundaries and the literacy score attribute.
 
-## Methods
-- Choropleth classification with five classes
-- Leaflet.js for interactive mapping
-- GitHub Pages for deployment
+## Web map
+- Basemap: OpenStreetMap
+- Library: Leaflet.js
+- Interaction: hover highlight + click popup
 
 ## Author
 Janeda Baysal
+
