@@ -176,6 +176,14 @@ div.innerHTML += "<hr style='margin:8px 0;border:0;border-top:1px solid #ddd;'>"
 div.innerHTML += "<div style='font-size:12px; line-height:1.4; color:#444;'>" +
                  "<b>Author:</b> Janeda Baysal" +
                  "</div>";
+div.innerHTML += "<hr style='margin:8px 0;border:0;border-top:1px solid #ddd;'>";
+
+div.innerHTML +=
+  "<div style='font-size:12px; line-height:1.4; color:#444;'>" +
+  "<b>Data source:</b> United Nations SDG 4 Dataset (2018)<br>" +
+  "<b>Basemap:</b> OpenStreetMap<br>" +
+  "<b>Author:</b> Janeda Baysal" +
+  "</div>";
 
   return div;
 };
@@ -203,6 +211,7 @@ if (closeBtn && modal) {
     modal.classList.add("hidden");
   });
 }
+
 
 
 
