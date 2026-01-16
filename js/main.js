@@ -172,11 +172,6 @@ legend.onAdd = function () {
       <i style="background:${getColor(90)}"></i> 84+
     </div>
   `;
-div.innerHTML += "<hr style='margin:8px 0;border:0;border-top:1px solid #ddd;'>";
-div.innerHTML += "<div style='font-size:12px; line-height:1.4; color:#444;'>" +
-                 "<b>Author:</b> Janeda Baysal" +
-                 "</div>";
-div.innerHTML += "<hr style='margin:8px 0;border:0;border-top:1px solid #ddd;'>";
 
 div.innerHTML +=
   "<div style='font-size:12px; line-height:1.4; color:#444;'>" +
@@ -211,6 +206,7 @@ if (closeBtn && modal) {
     modal.classList.add("hidden");
   });
 }
+
 
 
 
