@@ -22,7 +22,7 @@ Users can interact with the map by clicking on countries to view detailed inform
 
 ## Live Map
 You can view the interactive map here:  
-👉 **https://janedabaysal1676-ux.github.io/basicleaflet-map/**
+**(https://janedabaysal1676-ux.github.io/leaflet-map/)**
 
 ## Author
 **Janeda Baysal**
