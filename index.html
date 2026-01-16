@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <title>SDG 4 – Girls’ Literacy in Europe (2018)</title>
+
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+  <div id="map"></div>
+
+  <!-- WELCOME MODAL (shows on page load) -->
+  <div id="welcomeModal" class="modal-overlay">
+    <div class="modal-card">
+      <h2>About the Map</h2>
+      <p>
+        This map shows the distribution of SDG 4 girls’ literacy achievement in Europe in 2018.
+        Countries are classified into five categories based on their scores.
+        Lighter colors indicate lower values, while darker colors represent higher literacy achievement.
+      </p>
+      <button id="closeModalBtn" class="modal-btn">Start exploring</button>
+    </div>
+  </div>
+
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script src="js/main.js"></script>
+</body>
+</html>
