@@ -1,7 +1,15 @@
-# basicleaflet-map
+# SDG 4 – Girls’ Literacy in Europe (2018)
 
-Data source: United Nations SDG 4 Dataset (2018)
-Basemap: OpenStreetMap
-Visualization: Leaflet.js
-Author: Janeda Baysal
-Course: Advanced Cartography
+This interactive choropleth map visualizes girls’ literacy achievement across European countries in 2018.
+
+## Data
+- SDG 4 Girls’ Literacy Indicator (2018)
+- Source: United Nations
+
+## Methods
+- Choropleth classification with five classes
+- Leaflet.js for interactive mapping
+- GitHub Pages for deployment
+
+## Author
+Janeda Baysal
