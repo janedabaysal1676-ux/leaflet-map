@@ -30,7 +30,6 @@ function getScore(p) {
   return Number.isFinite(n) ? n : null;
 }
 
-
 function getName(p) {
   // keep multiple options just in case
   return p.name ?? p.NAME ?? p.NAME_EN ?? p.admin ?? p.nam_en ?? "Unknown";
@@ -77,28 +76,31 @@ function resetHighlight(e) {
   if (geojson) geojson.resetStyle(e.target);
 }
 
-// 6) Popup + Labels
+// 6) Popup (country names hidden by default; show on click)
 function onEachFeature(feature, layer) {
   var p = feature.properties || {};
   var name = getName(p);
   var score = getScore(p);
 
+  // ✅ Popup: name only appears when user clicks
   layer.bindPopup(
     "<b>" + name + "</b><br>" +
     "SDG 4 (Girls, 2018): " +
     (score === null ? "No data" : score.toFixed(2))
   );
 
-  // country name label (always visible)
-  layer.bindTooltip(name, {
-    permanent: true,
-    direction: "center",
-    className: "country-label"
-  });
+  // ❌ Removed always-visible labels:
+  // layer.bindTooltip(name, {
+  //   permanent: true,
+  //   direction: "center",
+  //   className: "country-label"
+  // });
+
   // 🔹 LEGEND’i ülkeye tıklayınca güncelle
   layer.on("click", function () {
     const bin = getBinIndex(score);
     highlightLegend(bin);
+    // Popup will open on click automatically (bindPopup is already attached)
   });
 
   layer.on({
@@ -173,16 +175,15 @@ legend.onAdd = function () {
     </div>
   `;
 
-div.innerHTML +=
-  "<div style='font-size:12px; line-height:1.4; color:#444;'>" +
-  "<b>Data source:</b> United Nations SDG 4 Dataset (2018)<br>" +
-  "<b>Basemap:</b> OpenStreetMap<br>" +
-  "<b>Author:</b> Janeda Baysal" +
-  "</div>";
+  div.innerHTML +=
+    "<div style='font-size:12px; line-height:1.4; color:#444;'>" +
+    "<b>Data source:</b> United Nations SDG 4 Dataset (2018)<br>" +
+    "<b>Basemap:</b> OpenStreetMap<br>" +
+    "<b>Author:</b> Janeda Baysal" +
+    "</div>";
 
   return div;
 };
-
 
 legend.addTo(map);
 
@@ -206,8 +207,3 @@ if (closeBtn && modal) {
     modal.classList.add("hidden");
   });
 }
-
-
-
-
-
