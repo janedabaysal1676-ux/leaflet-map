@@ -215,7 +215,7 @@ sdgIcon.onAdd = function () {
   var div = L.DomUtil.create("div", "sdg-icon");
   div.innerHTML = `
     <img
-      src="img/sdg4.png"
+      src="img/sdg4(1).png"
       alt="SDG 4 – Quality Education"
       style="width:70px; height:auto; display:block;"
     />
@@ -224,5 +224,6 @@ sdgIcon.onAdd = function () {
 };
 
 sdgIcon.addTo(map);
+
 
 
