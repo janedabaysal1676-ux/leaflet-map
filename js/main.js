@@ -217,13 +217,14 @@ sdgIcon.onAdd = function () {
     <img
       src="img/sdg4 (1).png"
       alt="SDG 4 – Quality Education"
-      style="width:70px; height:auto; display:block;"
+      style="width:110px; height:auto; display:block;"
     />
   `;
   return div;
 };
 
 sdgIcon.addTo(map);
+
 
 
 
