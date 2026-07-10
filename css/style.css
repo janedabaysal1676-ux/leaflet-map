@@ -104,61 +104,8 @@ html, body {
   pointer-events: none; /* labels should not block clicks */
 }
 
-/* =========================
-   WELCOME MODAL (OPTIONAL)
-========================= */
-.modal-overlay {
-  position: fixed;
-  inset: 0;
-  background: rgba(0,0,0,0.25);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 9999;
-}
 
-.modal-card {
-  width: min(520px, 90vw);
-  background: white;          /* modal background */
-  border-radius: 14px;
-  padding: 22px 22px 18px;
-  box-shadow: 0 10px 30px rgba(0,0,0,0.25);
-}
 
-.modal-card h2 {
-  margin: 0 0 10px;
-  font-size: 26px;
-  font-weight: 700;
-  color: #222;
-}
-
-.modal-card p {
-  margin: 0 0 16px;
-  font-size: 16px;
-  line-height: 1.6;
-  color: #333;
-}
-
-.modal-btn {
-  background: #111;
-  color: #fff;
-  border: 0;
-  padding: 10px 14px;
-  border-radius: 10px;
-  cursor: pointer;
-  font-weight: 600;
-}
-
-.modal-overlay.hidden {
-  display: none;
-}
-.sdg-icon{
-  background:#fff;
-  padding:6px;
-  border-radius:8px;
-  box-shadow:0 2px 6px rgba(0,0,0,.25);
-  margin-top:8px;
-}
 
 /* =========================
    SIDE PANEL
