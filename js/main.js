@@ -61,6 +61,16 @@ function style(feature) {
 
 var geojson;
 
+// ==========================
+// Country Selection Variables
+// ==========================
+
+let selectedCountries = [];
+let selectedLayers = [];
+
+const selectedCountriesDiv = document.getElementById("selectedCountries");
+const averageResultDiv = document.getElementById("averageResult");
+const clearSelectionBtn = document.getElementById("clearSelectionBtn");
 // 5) Hover
 function highlightFeature(e) {
   var layer = e.target;
