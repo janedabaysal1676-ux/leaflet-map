@@ -92,21 +92,21 @@ function onEachFeature(feature, layer) {
   var name = getName(p);
   var score = getScore(p);
 
-  // ✅ Popup: name only appears when user clicks
+  //  Popup: name only appears when user clicks
   layer.bindPopup(
     "<b>" + name + "</b><br>" +
     "SDG 4 (Girls, 2018): " +
     (score === null ? "No data" : score.toFixed(2))
   );
 
-  // ❌ Removed always-visible labels:
+  //  Removed always-visible labels:
   // layer.bindTooltip(name, {
   //   permanent: true,
   //   direction: "center",
   //   className: "country-label"
   // });
 
-  // 🔹 LEGEND’i ülkeye tıklayınca güncelle
+  //  LEGEND’i ülkeye tıklayınca güncelle
   layer.on("click", function () {
     const bin = getBinIndex(score);
     highlightLegend(bin);
@@ -209,7 +209,42 @@ title.onAdd = function () {
 title.addTo(map);
 
 
+function getCountryCenter(layer) {
+  return layer.getBounds().getCenter();
+}
 
+function findNearestCountries(clickedLatLng) {
+  let distances = [];
+
+  geojson.eachLayer(function (layer) {
+    const p = layer.feature.properties || {};
+    const name = getName(p);
+    const center = getCountryCenter(layer);
+
+    const distance = clickedLatLng.distanceTo(center) / 1000;
+
+    distances.push({
+      name: name,
+      distance: distance
+    });
+  });
+
+  distances.sort((a, b) => a.distance - b.distance);
+
+  const nearestThree = distances.slice(0, 3);
+
+  document.getElementById("nearestCountries").innerHTML =
+    nearestThree
+      .map((c, index) =>
+        `${index + 1}. ${c.name} – ${c.distance.toFixed(1)} km`
+      )
+      .join("<br>");
+}
+
+map.on("click", function (e) {
+  if (!geojson) return;
+  findNearestCountries(e.latlng);
+});
 
 
 
