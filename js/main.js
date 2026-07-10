@@ -107,11 +107,14 @@ function onEachFeature(feature, layer) {
   // });
 
   //  LEGEND’i ülkeye tıklayınca güncelle
-  layer.on("click", function () {
-    const bin = getBinIndex(score);
-    highlightLegend(bin);
-    // Popup will open on click automatically (bindPopup is already attached)
-  });
+layer.on("click", function (e) {
+  L.DomEvent.stopPropagation(e);
+
+  const bin = getBinIndex(score);
+  highlightLegend(bin);
+
+  selectCountry(name, score, layer);
+});
 
   layer.on({
     mouseover: highlightFeature,
@@ -209,44 +212,32 @@ title.onAdd = function () {
 title.addTo(map);
 
 
-function getCountryCenter(layer) {
-  return layer.getBounds().getCenter();
-}
-
 function findNearestCountries(clickedLatLng) {
+  if (!geojson) return;
+
   let distances = [];
 
   geojson.eachLayer(function (layer) {
     const p = layer.feature.properties || {};
     const name = getName(p);
-    const center = getCountryCenter(layer);
-
+    const center = layer.getBounds().getCenter();
     const distance = clickedLatLng.distanceTo(center) / 1000;
 
-    distances.push({
-      name: name,
-      distance: distance
-    });
+    distances.push({ name, distance });
   });
 
   distances.sort((a, b) => a.distance - b.distance);
 
-  const nearestThree = distances.slice(0, 3);
+  const nearestDiv = document.getElementById("nearestCountries");
 
-  document.getElementById("nearestCountries").innerHTML =
-    nearestThree
-      .map((c, index) =>
-        `${index + 1}. ${c.name} – ${c.distance.toFixed(1)} km`
-      )
-      .join("<br>");
+  nearestDiv.innerHTML = distances
+    .slice(0, 3)
+    .map((c, i) => `${i + 1}. ${c.name} – ${c.distance.toFixed(1)} km`)
+    .join("<br>");
 }
 
 map.on("click", function (e) {
-  if (!geojson) return;
-  findNearestCountries(e.latlng);
+  setTimeout(function () {
+    findNearestCountries(e.latlng);
+  }, 50);
 });
-
-
-
-
-
