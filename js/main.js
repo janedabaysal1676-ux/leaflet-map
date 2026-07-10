@@ -1,24 +1,16 @@
-// ======================================
-// SDG 4 – Girls’ Literacy (from CLEAN GeoJSON)
-// ======================================
-
-// 1) Create map
 var map = L.map("map", {
   minZoom: 3,
   maxZoom: 8,
   zoomControl: true
 });
 
-// 2) Basemap
 L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
   attribution: "&copy; OpenStreetMap contributors"
 }).addTo(map);
 
-// ---------- Helpers (use YOUR real fields) ----------
 function getScore(p) {
   if (!p) return null;
 
-  // keys içinde "aggregated" ve "2018" geçen ilk alanı yakala
   const key = Object.keys(p).find(k => {
     const s = String(k).toLowerCase();
     return s.includes("aggreg") && s.includes("2018");
@@ -31,11 +23,9 @@ function getScore(p) {
 }
 
 function getName(p) {
-  // keep multiple options just in case
   return p.name ?? p.NAME ?? p.NAME_EN ?? p.admin ?? p.nam_en ?? "Unknown";
 }
 
-// 3) Color scale
 function getColor(score) {
   if (score === null) return "#eeeeee";
 
@@ -46,10 +36,8 @@ function getColor(score) {
                         "#f2e6ef";
 }
 
-// 4) Style
 function style(feature) {
-  var p = feature.properties || {};
-  var score = getScore(p);
+  const score = getScore(feature.properties || {});
 
   return {
     fillColor: getColor(score),
@@ -60,86 +48,27 @@ function style(feature) {
 }
 
 var geojson;
-
-// ==========================
-// Country Selection Variables
-// ==========================
-
 let selectedCountries = [];
 let selectedLayers = [];
 
 const selectedCountriesDiv = document.getElementById("selectedCountries");
 const averageResultDiv = document.getElementById("averageResult");
 const clearSelectionBtn = document.getElementById("clearSelectionBtn");
-// 5) Hover
+const nearestCountriesDiv = document.getElementById("nearestCountries");
+
 function highlightFeature(e) {
-  var layer = e.target;
-  layer.setStyle({
+  e.target.setStyle({
     weight: 2,
     color: "#000",
     fillOpacity: 1
   });
-  layer.bringToFront();
+  e.target.bringToFront();
 }
 
 function resetHighlight(e) {
   if (geojson) geojson.resetStyle(e.target);
 }
 
-// 6) Popup (country names hidden by default; show on click)
-function onEachFeature(feature, layer) {
-  var p = feature.properties || {};
-  var name = getName(p);
-  var score = getScore(p);
-
-  //  Popup: name only appears when user clicks
-  layer.bindPopup(
-    "<b>" + name + "</b><br>" +
-    "SDG 4 (Girls, 2018): " +
-    (score === null ? "No data" : score.toFixed(2))
-  );
-
-  //  Removed always-visible labels:
-  // layer.bindTooltip(name, {
-  //   permanent: true,
-  //   direction: "center",
-  //   className: "country-label"
-  // });
-
-  //  LEGEND’i ülkeye tıklayınca güncelle
-layer.on("click", function (e) {
-  L.DomEvent.stopPropagation(e);
-
-  const bin = getBinIndex(score);
-  highlightLegend(bin);
-
-  selectCountry(name, score, layer);
-});
-
-  layer.on({
-    mouseover: highlightFeature,
-    mouseout: resetHighlight
-  });
-}
-
-// 7) Load CLEAN GeoJSON (already Europe only)
-fetch("data/sdg4_girls_literacy_2018.geojson")
-  .then(r => r.json())
-  .then(data => {
-    geojson = L.geoJson(data, {
-      style: style,
-      onEachFeature: onEachFeature
-    }).addTo(map);
-
-    // zoom to your cleaned layer
-    map.fitBounds(geojson.getBounds());
-
-    // lock map to that extent
-    map.setMaxBounds(geojson.getBounds());
-    map.options.maxBoundsViscosity = 1.0;
-  });
-
-// 8) Legend
 function getBinIndex(score) {
   if (score === null || score === undefined || score === "") return null;
   score = Number(score);
@@ -147,17 +76,138 @@ function getBinIndex(score) {
   if (score <= 68.2) return 0;
   if (score <= 77.7) return 1;
   if (score <= 81.3) return 2;
-  if (score <= 84)   return 3;
+  if (score <= 84) return 3;
   return 4;
 }
 
 function highlightLegend(binIndex) {
-  document.querySelectorAll(".legend .legend-row").forEach(r => r.classList.remove("active"));
+  document.querySelectorAll(".legend .legend-row").forEach(row => {
+    row.classList.remove("active");
+  });
+
   if (binIndex === null) return;
 
   const row = document.querySelector(`.legend .legend-row[data-bin="${binIndex}"]`);
   if (row) row.classList.add("active");
 }
+
+function selectCountry(name, score, layer) {
+  if (score === null) return;
+
+  if (selectedCountries.length === 2) {
+    clearSelection();
+  }
+
+  selectedCountries.push({ name, score });
+  selectedLayers.push(layer);
+
+  layer.setStyle({
+    weight: 3,
+    color: "#000",
+    fillOpacity: 1
+  });
+
+  updateSelectionPanel();
+}
+
+function updateSelectionPanel() {
+  if (selectedCountries.length === 0) {
+    selectedCountriesDiv.innerHTML = "No country selected yet.";
+    averageResultDiv.innerHTML = "";
+    return;
+  }
+
+  selectedCountriesDiv.innerHTML = selectedCountries
+    .map(c => `${c.name}: ${c.score.toFixed(2)}`)
+    .join("<br>");
+
+  if (selectedCountries.length === 2) {
+    const avg = (selectedCountries[0].score + selectedCountries[1].score) / 2;
+    averageResultDiv.innerHTML = "Average Score: " + avg.toFixed(2);
+  } else {
+    averageResultDiv.innerHTML = "";
+  }
+}
+
+function clearSelection() {
+  selectedLayers.forEach(layer => {
+    geojson.resetStyle(layer);
+  });
+
+  selectedCountries = [];
+  selectedLayers = [];
+
+  updateSelectionPanel();
+}
+
+if (clearSelectionBtn) {
+  clearSelectionBtn.addEventListener("click", clearSelection);
+}
+
+function findNearestCountries(clickedLatLng) {
+  if (!geojson) return;
+
+  let distances = [];
+
+  geojson.eachLayer(function (layer) {
+    const p = layer.feature.properties || {};
+    const name = getName(p);
+    const center = layer.getBounds().getCenter();
+    const distance = clickedLatLng.distanceTo(center) / 1000;
+
+    distances.push({
+      name: name,
+      distance: distance
+    });
+  });
+
+  distances.sort((a, b) => a.distance - b.distance);
+
+  nearestCountriesDiv.innerHTML = distances
+    .slice(0, 3)
+    .map((c, i) => `${i + 1}. ${c.name} – ${c.distance.toFixed(1)} km`)
+    .join("<br>");
+}
+
+function onEachFeature(feature, layer) {
+  const p = feature.properties || {};
+  const name = getName(p);
+  const score = getScore(p);
+
+  layer.bindPopup(
+    "<b>" + name + "</b><br>" +
+    "SDG 4 (Girls, 2018): " +
+    (score === null ? "No data" : score.toFixed(2))
+  );
+
+  layer.on("click", function (e) {
+    const bin = getBinIndex(score);
+    highlightLegend(bin);
+    selectCountry(name, score, layer);
+  });
+
+  layer.on({
+    mouseover: highlightFeature,
+    mouseout: resetHighlight
+  });
+}
+
+fetch("data/sdg4_girls_literacy_2018.geojson")
+  .then(response => response.json())
+  .then(data => {
+    geojson = L.geoJson(data, {
+      style: style,
+      onEachFeature: onEachFeature
+    }).addTo(map);
+
+    map.fitBounds(geojson.getBounds());
+    map.setMaxBounds(geojson.getBounds());
+    map.options.maxBoundsViscosity = 1.0;
+
+    map.on("click", function (e) {
+      findNearestCountries(e.latlng);
+    });
+  });
 
 var legend = L.control({ position: "bottomright" });
 
@@ -186,21 +236,19 @@ legend.onAdd = function () {
     <div class="legend-row" data-bin="4">
       <i style="background:${getColor(90)}"></i> 84+
     </div>
-  `;
 
-  div.innerHTML +=
-    "<div style='font-size:12px; line-height:1.4; color:#444;'>" +
-    "<b>Data source:</b> United Nations SDG 4 Dataset (2018)<br>" +
-    "<b>Basemap:</b> OpenStreetMap<br>" +
-    "<b>Author:</b> Janeda Baysal" +
-    "</div>";
+    <div style="font-size:12px; line-height:1.4; color:#444; margin-top:10px;">
+      <b>Data source:</b> United Nations SDG 4 Dataset (2018)<br>
+      <b>Basemap:</b> OpenStreetMap<br>
+      <b>Author:</b> Janeda Baysal
+    </div>
+  `;
 
   return div;
 };
 
 legend.addTo(map);
 
-// 9) Title
 var title = L.control({ position: "topleft" });
 
 title.onAdd = function () {
@@ -211,33 +259,8 @@ title.onAdd = function () {
 
 title.addTo(map);
 
-
-function findNearestCountries(clickedLatLng) {
-  if (!geojson) return;
-
-  let distances = [];
-
-  geojson.eachLayer(function (layer) {
-    const p = layer.feature.properties || {};
-    const name = getName(p);
-    const center = layer.getBounds().getCenter();
-    const distance = clickedLatLng.distanceTo(center) / 1000;
-
-    distances.push({ name, distance });
-  });
-
-  distances.sort((a, b) => a.distance - b.distance);
-
-  const nearestDiv = document.getElementById("nearestCountries");
-
-  nearestDiv.innerHTML = distances
-    .slice(0, 3)
-    .map((c, i) => `${i + 1}. ${c.name} – ${c.distance.toFixed(1)} km`)
-    .join("<br>");
-}
-
-map.on("click", function (e) {
-  setTimeout(function () {
-    findNearestCountries(e.latlng);
-  }, 50);
-});
+L.control.scale({
+  position: "bottomleft",
+  metric: true,
+  imperial: false
+}).addTo(map);
