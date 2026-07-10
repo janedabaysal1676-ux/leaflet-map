@@ -137,6 +137,7 @@ function clearSelection() {
   selectedCountries = [];
   selectedLayers = [];
 
+  nearestCountriesDiv.innerHTML = "Click a country to list the three nearest countries.";
   updateSelectionPanel();
 }
 
@@ -159,10 +160,7 @@ function findNearestCountriesToLayer(selectedLayer, selectedName) {
     const center = layer.getBounds().getCenter();
     const distance = selectedCenter.distanceTo(center) / 1000;
 
-    distances.push({
-      name: name,
-      distance: distance
-    });
+    distances.push({ name, distance });
   });
 
   distances.sort((a, b) => a.distance - b.distance);
