@@ -208,32 +208,8 @@ title.onAdd = function () {
 
 title.addTo(map);
 
-// Close welcome modal
-const modal = document.getElementById("welcomeModal");
-const closeBtn = document.getElementById("closeModalBtn");
 
-if (closeBtn && modal) {
-  closeBtn.addEventListener("click", () => {
-    modal.classList.add("hidden");
-  });
-}
 
-// 10) SDG 4 Icon (top-left)
-var sdgIcon = L.control({ position: "topleft" });
-
-sdgIcon.onAdd = function () {
-  var div = L.DomUtil.create("div", "sdg-icon");
-  div.innerHTML = `
-    <img
-      src="img/sdg4 (1).png"
-      alt="SDG 4 – Quality Education"
-      style="width:110px; height:auto; display:block;"
-    />
-  `;
-  return div;
-};
-
-sdgIcon.addTo(map);
 
 
 
