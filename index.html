@@ -11,7 +11,23 @@
 </head>
 <body>
   <div id="map"></div>
+<div id="sidePanel" class="side-panel">
+  <h3>Interactive Tools</h3>
 
+  <div class="tool-section">
+    <h4>Average Literacy Score</h4>
+    <p>Click two countries to calculate their average score.</p>
+    <div id="selectedCountries">No country selected yet.</div>
+    <div id="averageResult"></div>
+    <button id="clearSelectionBtn">Clear Selection</button>
+  </div>
+
+  <div class="tool-section">
+    <h4>Nearest Countries</h4>
+    <p>Click anywhere on the map to list the three nearest countries.</p>
+    <div id="nearestCountries">No point selected yet.</div>
+  </div>
+</div>
   <!-- WELCOME MODAL (shows on page load) -->
   <div id="welcomeModal" class="modal-overlay">
     <div class="modal-card">
