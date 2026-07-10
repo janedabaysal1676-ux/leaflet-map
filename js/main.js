@@ -144,16 +144,20 @@ if (clearSelectionBtn) {
   clearSelectionBtn.addEventListener("click", clearSelection);
 }
 
-function findNearestCountries(clickedLatLng) {
+function findNearestCountriesToLayer(selectedLayer, selectedName) {
   if (!geojson) return;
 
+  const selectedCenter = selectedLayer.getBounds().getCenter();
   let distances = [];
 
   geojson.eachLayer(function (layer) {
     const p = layer.feature.properties || {};
     const name = getName(p);
+
+    if (name === selectedName) return;
+
     const center = layer.getBounds().getCenter();
-    const distance = clickedLatLng.distanceTo(center) / 1000;
+    const distance = selectedCenter.distanceTo(center) / 1000;
 
     distances.push({
       name: name,
@@ -163,10 +167,12 @@ function findNearestCountries(clickedLatLng) {
 
   distances.sort((a, b) => a.distance - b.distance);
 
-  nearestCountriesDiv.innerHTML = distances
-    .slice(0, 3)
-    .map((c, i) => `${i + 1}. ${c.name} – ${c.distance.toFixed(1)} km`)
-    .join("<br>");
+  nearestCountriesDiv.innerHTML =
+    "<b>Nearest countries to " + selectedName + ":</b><br>" +
+    distances
+      .slice(0, 3)
+      .map((c, i) => `${i + 1}. ${c.name} – ${c.distance.toFixed(1)} km`)
+      .join("<br>");
 }
 
 function onEachFeature(feature, layer) {
@@ -180,10 +186,12 @@ function onEachFeature(feature, layer) {
     (score === null ? "No data" : score.toFixed(2))
   );
 
-  layer.on("click", function (e) {
+  layer.on("click", function () {
     const bin = getBinIndex(score);
     highlightLegend(bin);
+
     selectCountry(name, score, layer);
+    findNearestCountriesToLayer(layer, name);
   });
 
   layer.on({
@@ -203,10 +211,6 @@ fetch("data/sdg4_girls_literacy_2018.geojson")
     map.fitBounds(geojson.getBounds());
     map.setMaxBounds(geojson.getBounds());
     map.options.maxBoundsViscosity = 1.0;
-
-    map.on("click", function (e) {
-      findNearestCountries(e.latlng);
-    });
   });
 
 var legend = L.control({ position: "bottomright" });
