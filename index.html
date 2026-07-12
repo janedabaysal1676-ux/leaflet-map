@@ -6,31 +6,63 @@
 
   <title>SDG 4 – Girls’ Literacy in Europe (2018)</title>
 
-  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <!-- Leaflet CSS -->
+  <link
+    rel="stylesheet"
+    href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+  />
+
+  <!-- Leaflet Geocoder CSS -->
+  <link
+    rel="stylesheet"
+    href="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.css"
+  />
+
+  <!-- Custom CSS -->
   <link rel="stylesheet" href="css/style.css" />
 </head>
+
 <body>
   <div id="map"></div>
-<div id="sidePanel" class="side-panel">
-  <h3>Interactive Tools</h3>
 
-  <div class="tool-section">
-    <h4>Average Literacy Score</h4>
-    <p>Click two countries to calculate their average score.</p>
-    <div id="selectedCountries">No country selected yet.</div>
-    <div id="averageResult"></div>
-    <button id="clearSelectionBtn">Clear Selection</button>
+  <div id="sidePanel" class="side-panel">
+    <h3>Interactive Tools</h3>
+
+    <div class="tool-section">
+      <h4>Average Literacy Score</h4>
+      <p>Click two countries to calculate their average score.</p>
+
+      <div id="selectedCountries">
+        No country selected yet.
+      </div>
+
+      <div id="averageResult"></div>
+
+      <button id="clearSelectionBtn">
+        Clear Selection
+      </button>
+    </div>
+
+    <div class="tool-section">
+      <h4>Nearest Countries</h4>
+
+      <p>
+        Click a country to list its three nearest countries.
+      </p>
+
+      <div id="nearestCountries">
+        Click a country to list the three nearest countries.
+      </div>
+    </div>
   </div>
 
-  <div class="tool-section">
-    <h4>Nearest Countries</h4>
-    <p>Click anywhere on the map to list the three nearest countries.</p>
-    <div id="nearestCountries">No point selected yet.</div>
-  </div>
-</div>
-
-
+  <!-- Leaflet JavaScript -->
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+  <!-- Leaflet Geocoder JavaScript -->
+  <script src="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.js"></script>
+
+  <!-- Custom JavaScript -->
   <script src="js/main.js"></script>
 </body>
 </html>
