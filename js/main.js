@@ -213,6 +213,7 @@ fetch("data/sdg4_girls_literacy_2018.geojson")
     }).addTo(map);
 
     map.fitBounds(geojson.getBounds());
+    worldPopLayer.addTo(map);
     map.setMaxBounds(geojson.getBounds());
     map.options.maxBoundsViscosity = 1.0;
   });
