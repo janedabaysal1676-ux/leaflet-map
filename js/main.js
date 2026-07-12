@@ -266,3 +266,91 @@ L.control.scale({
   metric: true,
   imperial: false
 }).addTo(map);
+
+
+// ======================================
+// COUNTRY SEARCH
+// ======================================
+
+var searchControl = L.Control.geocoder({
+  defaultMarkGeocode: false,
+  placeholder: "Search a country...",
+  position: "topright"
+})
+  .on("markgeocode", function (e) {
+    if (!geojson) return;
+
+    const searchedName = e.geocode.name.toLowerCase();
+    let matchedLayer = null;
+
+    geojson.eachLayer(function (layer) {
+      const countryName = getName(
+        layer.feature.properties || {}
+      ).toLowerCase();
+
+      if (
+        searchedName.includes(countryName) ||
+        countryName.includes(searchedName)
+      ) {
+        matchedLayer = layer;
+      }
+    });
+
+    if (matchedLayer) {
+      map.fitBounds(matchedLayer.getBounds(), {
+        padding: [40, 40],
+        maxZoom: 6
+      });
+
+      matchedLayer.openPopup();
+    } else if (e.geocode.bbox) {
+      map.fitBounds(e.geocode.bbox);
+    }
+  })
+  .addTo(map);
+
+
+// ======================================
+// HOME / RESET VIEW BUTTON
+// ======================================
+
+var HomeControl = L.Control.extend({
+  options: {
+    position: "topleft"
+  },
+
+  onAdd: function () {
+    var container = L.DomUtil.create(
+      "button",
+      "leaflet-bar home-button"
+    );
+
+    container.innerHTML = "⌂";
+    container.title = "Reset map view";
+    container.type = "button";
+
+    L.DomEvent.disableClickPropagation(container);
+    L.DomEvent.disableScrollPropagation(container);
+
+    container.addEventListener("click", function () {
+      if (!geojson) return;
+
+      map.fitBounds(geojson.getBounds());
+
+      clearSelection();
+
+      nearestCountriesDiv.innerHTML =
+        "Click a country to list the three nearest countries.";
+
+      document
+        .querySelectorAll(".legend .legend-row")
+        .forEach(row => row.classList.remove("active"));
+
+      map.closePopup();
+    });
+
+    return container;
+  }
+});
+
+map.addControl(new HomeControl());
