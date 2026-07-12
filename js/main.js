@@ -8,6 +8,12 @@ L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
   attribution: "&copy; OpenStreetMap contributors"
 }).addTo(map);
 
+var worldPopLayer = L.tileLayer("tiles/worldpop/{z}/{x}/{y}.png", {
+    opacity: 0.65,
+    maxZoom: 8,
+    minZoom: 3
+});
+
 function getScore(p) {
   if (!p) return null;
 
