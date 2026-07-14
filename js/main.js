@@ -24,7 +24,7 @@ var openStreetMap = L.tileLayer(
 
 
 // ======================================
-// 3. WORLDPOP RASTER TILES
+// 3. WORLDPOP RASTER LAYER
 // ======================================
 
 var worldPopLayer = L.tileLayer(
@@ -33,8 +33,7 @@ var worldPopLayer = L.tileLayer(
     attribution: "WorldPop Population Data (2018)",
     opacity: 0.65,
     minZoom: 3,
-    maxZoom: 8,
-    tms: false
+    maxZoom: 8
   }
 );
 
@@ -75,7 +74,7 @@ function getName(properties) {
 
 
 // ======================================
-// 5. CHOROPLETH COLORS
+// 5. CHOROPLETH COLORS AND STYLE
 // ======================================
 
 function getColor(score) {
@@ -220,13 +219,12 @@ function clearLegendHighlight() {
 function selectCountry(name, score, layer) {
   if (score === null) return;
 
-  const alreadySelected =
-    selectedLayers.includes(layer);
+  const alreadySelected = selectedLayers.includes(layer);
 
   if (alreadySelected) return;
 
   if (selectedCountries.length === 2) {
-    clearCountrySelection();
+    clearSelection();
   }
 
   selectedCountries.push({
@@ -283,7 +281,7 @@ function updateSelectionPanel() {
   }
 }
 
-function clearCountrySelection() {
+function clearSelection() {
   if (geojson) {
     selectedLayers.forEach(function (layer) {
       geojson.resetStyle(layer);
@@ -294,32 +292,35 @@ function clearCountrySelection() {
   selectedLayers = [];
 
   updateSelectionPanel();
-  clearLegendHighlight();
-  map.closePopup();
-}
-
-function clearEverything() {
-  clearCountrySelection();
 
   nearestCountriesDiv.innerHTML =
-    "Click anywhere on the map to list the three nearest countries.";
+    "Click a country to list the three nearest countries.";
+
+  clearLegendHighlight();
+
+  map.closePopup();
 }
 
 if (clearSelectionBtn) {
   clearSelectionBtn.addEventListener(
     "click",
-    clearEverything
+    clearSelection
   );
 }
 
 
 // ======================================
 // 10. FIND THREE NEAREST COUNTRIES
-//     FROM A CLICKED MAP POINT
 // ======================================
 
-function findNearestCountriesToPoint(clickedLatLng) {
+function findNearestCountriesToLayer(
+  selectedLayer,
+  selectedName
+) {
   if (!geojson) return;
+
+  const selectedCenter =
+    selectedLayer.getBounds().getCenter();
 
   const distances = [];
 
@@ -330,11 +331,13 @@ function findNearestCountriesToPoint(clickedLatLng) {
     const countryName =
       getName(properties);
 
+    if (countryName === selectedName) return;
+
     const countryCenter =
       layer.getBounds().getCenter();
 
     const distanceKm =
-      clickedLatLng.distanceTo(countryCenter) / 1000;
+      selectedCenter.distanceTo(countryCenter) / 1000;
 
     distances.push({
       name: countryName,
@@ -350,7 +353,9 @@ function findNearestCountriesToPoint(clickedLatLng) {
     distances.slice(0, 3);
 
   nearestCountriesDiv.innerHTML =
-    "<b>Nearest countries to the selected point:</b><br>" +
+    "<b>Nearest countries to " +
+    selectedName +
+    ":</b><br>" +
     nearestThree
       .map(function (country, index) {
         return (
@@ -406,8 +411,9 @@ function onEachFeature(feature, layer) {
       layer
     );
 
-    findNearestCountriesToPoint(
-      event.latlng
+    findNearestCountriesToLayer(
+      layer,
+      countryName
     );
   });
 
@@ -476,18 +482,7 @@ fetch("data/sdg4_girls_literacy_2018.geojson")
 
 
 // ======================================
-// 13. MAP CLICK
-// ======================================
-
-map.on("click", function (event) {
-  findNearestCountriesToPoint(
-    event.latlng
-  );
-});
-
-
-// ======================================
-// 14. LEGEND
+// 13. LEGEND
 // ======================================
 
 var legend = L.control({
@@ -560,7 +555,7 @@ legend.addTo(map);
 
 
 // ======================================
-// 15. MAP TITLE
+// 14. MAP TITLE
 // ======================================
 
 var title = L.control({
@@ -583,7 +578,7 @@ title.addTo(map);
 
 
 // ======================================
-// 16. SCALE BAR
+// 15. SCALE BAR
 // ======================================
 
 L.control.scale({
@@ -594,7 +589,7 @@ L.control.scale({
 
 
 // ======================================
-// 17. COUNTRY SEARCH
+// 16. COUNTRY SEARCH
 // ======================================
 
 var searchControl =
@@ -648,7 +643,7 @@ var searchControl =
 
 
 // ======================================
-// 18. HOME / RESET VIEW BUTTON
+// 17. HOME / RESET VIEW BUTTON
 // ======================================
 
 var HomeControl = L.Control.extend({
@@ -687,7 +682,7 @@ var HomeControl = L.Control.extend({
           geojson.getBounds()
         );
 
-        clearEverything();
+        clearSelection();
       }
     );
 
