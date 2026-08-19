@@ -659,50 +659,34 @@ var searchControl =
 // 17. HOME / RESET VIEW BUTTON
 // ======================================
 
-var HomeControl = L.Control.extend({
-  options: {
-    position: "topleft"
-  },
+const zoomControlContainer =
+  document.querySelector(".leaflet-control-zoom");
 
-  onAdd: function () {
-    const container =
-      L.DomUtil.create(
-        "button",
-        "leaflet-bar home-button"
-      );
+if (zoomControlContainer) {
 
-    container.innerHTML = "⌂";
-    container.title =
-      "Reset map view";
-
-    container.type =
-      "button";
-
-    L.DomEvent.disableClickPropagation(
-      container
+  const homeButton =
+    L.DomUtil.create(
+      "a",
+      "leaflet-control-zoom-home",
+      zoomControlContainer
     );
 
-    L.DomEvent.disableScrollPropagation(
-      container
+  homeButton.innerHTML = "⌂";
+  homeButton.href = "#";
+  homeButton.title = "Reset map view";
+  homeButton.setAttribute("role", "button");
+
+  L.DomEvent.on(homeButton, "click", function (event) {
+
+    L.DomEvent.preventDefault(event);
+    L.DomEvent.stopPropagation(event);
+
+    if (!geojson) return;
+
+    map.fitBounds(
+      geojson.getBounds()
     );
 
-    container.addEventListener(
-      "click",
-      function () {
-        if (!geojson) return;
-
-        map.fitBounds(
-          geojson.getBounds()
-        );
-
-        clearSelection();
-      }
-    );
-
-    return container;
-  }
-});
-
-map.addControl(
-  new HomeControl()
-);
+    clearSelection();
+  });
+}
