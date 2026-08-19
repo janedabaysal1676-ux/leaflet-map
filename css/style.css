@@ -112,7 +112,7 @@ html, body {
 ========================= */
 .side-panel {
   position: absolute;
-  top: 230px;
+  top: 170px;
   left: 10px;
   z-index: 1000;
   width: 310px;
@@ -174,22 +174,29 @@ html, body {
 /* =========================
    HOME BUTTON
 ========================= */
+
+.home-control {
+  margin-top: 5px !important;
+}
+
 .home-button {
-  width: 34px;
-  height: 34px;
+  width: 30px !important;
+  height: 30px !important;
+  line-height: 30px !important;
+  display: block;
   background: white;
-  border: none;
-  font-size: 24px;
+  color: #222;
+  text-align: center;
+  text-decoration: none;
+  font-size: 20px;
   font-weight: bold;
   cursor: pointer;
-  line-height: 34px;
-  text-align: center;
 }
 
 .home-button:hover {
   background: #f2f2f2;
+  color: #000;
 }
-
 /* =========================
    SEARCH CONTROL
 ========================= */
