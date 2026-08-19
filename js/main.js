@@ -27,13 +27,26 @@ var openStreetMap = L.tileLayer(
 // 3. WORLDPOP RASTER LAYER
 // ======================================
 
+// Europe extent of the WorldPop 2018 raster
+var worldPopBounds = L.latLngBounds(
+  [35.841250058, -11.584583272],   // south-west
+  [76.907916560, 34.173749878]    // north-east
+);
+
 var worldPopLayer = L.tileLayer(
-  "tiles/worldpop/{z}/{x}/{y}.png",
+  "tiles/worldpop/{z}/{x}/{y}.png?v=20260819-2",
   {
     attribution: "WorldPop Population Data (2018)",
     opacity: 0.65,
+
     minZoom: 3,
-    maxZoom: 8
+    maxZoom: 8,
+
+    minNativeZoom: 3,
+    maxNativeZoom: 8,
+
+    bounds: worldPopBounds,
+    noWrap: true
   }
 );
 
