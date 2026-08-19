@@ -112,7 +112,7 @@ html, body {
 ========================= */
 .side-panel {
   position: absolute;
-  top: 210px;
+  top: 250px;
   left: 10px;
   z-index: 1000;
   width: 310px;
